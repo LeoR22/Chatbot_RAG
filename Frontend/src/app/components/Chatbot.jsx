@@ -31,10 +31,13 @@ const Chatbot = () => {
                 }
             );
 
-            const { sql_query, results } = response.data;
+            const { sql_query, mysql_results, mongo_results } = response.data;
 
             setSqlQuery(sql_query);
-            setResults(results);
+
+            // Decide qué resultados mostrar (mysql o mongo)
+            const combinedResults = mysql_results || mongo_results || [];
+            setResults(combinedResults);
 
             setMessages((prevMessages) => [
                 ...prevMessages,
@@ -105,7 +108,6 @@ const Chatbot = () => {
     };
 
     return (
-        //<div className="chatbot-container flex flex-col w-full bg-white rounded-lg shadow-lg">
         <div className="chatbot-container flex flex-col w-full max-w-4xl mx-auto bg-white rounded-lg shadow-lg">
             <div className="flex items-center mb-6">
                 <img src="/chatbot-icon.png" alt="Logo" className="w-16 h-16 mr-4" />
@@ -118,8 +120,7 @@ const Chatbot = () => {
                 {messages.map((msg, index) => (
                     <div
                         key={index}
-                        className={`message ${msg.sender === "user" ? "text-right" : "text-left"
-                            }`}
+                        className={`message ${msg.sender === "user" ? "text-right" : "text-left"}`}
                     >
                         <div className="flex items-center space-x-2">
                             {msg.sender === "user" ? (
@@ -137,8 +138,8 @@ const Chatbot = () => {
                             )}
                             <div
                                 className={`message-text p-3 rounded-lg ${msg.sender === "user"
-                                        ? "bg-blue-500 text-white"
-                                        : "bg-gray-200"
+                                    ? "bg-blue-500 text-white"
+                                    : "bg-gray-200"
                                     }`}
                             >
                                 {msg.text}

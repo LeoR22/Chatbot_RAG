@@ -6,11 +6,15 @@ class GroqService:
         self.api_key = os.getenv("GROQ_API_KEY")
         self.base_url = "https://api.groq.com/openai/v1/chat/completions"
 
-    def generate_sql(self, question, schema):
+    def generate_sql(self, question, schema, mongo_results):
         headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json",
         }
+
+        # Incluir resultados de MongoDB como contexto adicional
+        mongo_context = "\n".join([str(result) for result in mongo_results])
+        
         data = {
             "model": "llama3-8b-8192",
             "messages": [
@@ -23,15 +27,20 @@ class GroqService:
                     ESQUEMA:
                     {schema}
 
+                    RESULTADOS DE MONGODB:
+                    {mongo_context}
+
                     Pregunta del Usuario: {question}
                     """,
                 }
             ],
         }
+        
         response = requests.post(self.base_url, json=data, headers=headers)
         response.raise_for_status()
         result = response.json()
         return self._extract_sql(result)
+
 
     def _extract_sql(self, response):
         content = response.get("choices", [{}])[0].get("message", {}).get("content", "")
