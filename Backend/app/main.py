@@ -3,7 +3,7 @@ from app.interfaces.controllers.query_controller import router
 from fastapi.middleware.cors import CORSMiddleware 
 
 app = FastAPI(
-    title="Proyecto Universidad API",
+    title="DataGenie Chatbot RAG API",
     description="API para generar y ejecutar consultas SQL basadas en lenguaje natural utilizando Groq.",
     version="1.0.0",
 )

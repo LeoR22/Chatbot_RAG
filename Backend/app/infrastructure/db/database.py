@@ -1,6 +1,8 @@
 import os
 import mysql.connector
 from mysql.connector import Error
+from dotenv import load_dotenv
+load_dotenv()
 
 class Database:
     def __init__(self):
@@ -12,7 +14,8 @@ class Database:
                 host=os.getenv("DB_HOST"),
                 user=os.getenv("DB_USER"),
                 password=os.getenv("DB_PASSWORD"),
-                database=os.getenv("DB_NAME")
+                database=os.getenv("DB_NAME"),
+                port=os.getenv("DB_PORT")
             )
         except Error as e:
             raise ConnectionError(f"Error al conectar a la base de datos: {e}")
